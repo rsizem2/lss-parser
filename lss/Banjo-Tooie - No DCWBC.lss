@@ -758,7 +758,7 @@
       </BestSegmentTime>
       <SegmentHistory>
         <Time id="0">
-          <RealTime>00:07:47</RealTime>
+          <RealTime>00:07:47.0000000</RealTime>
         </Time>
         <Time id="1">
           <RealTime>00:07:47.6740000</RealTime>
@@ -1162,7 +1162,7 @@
       </BestSegmentTime>
       <SegmentHistory>
         <Time id="0">
-          <RealTime>00:07:55</RealTime>
+          <RealTime>00:07:55.0000000</RealTime>
         </Time>
         <Time id="1">
           <RealTime>00:05:45.2920000</RealTime>

@@ -1,8 +1,8 @@
 '''
-Code for pulling out completed runs from livesplit .lss which has been parsed into an xml.etree called 'root'
-
-Complete runs are runs which have a final time, and a split time for each segment.
+Code for pulling run data from livesplit .lss, using the xmltree library
 '''
+
+import xml.etree.ElementTree as ET
 
 def get_complete_runs(root, verbose = True):
     # gets all complete runs
@@ -11,7 +11,7 @@ def get_complete_runs(root, verbose = True):
     for run in runs:
         if len(run) > 0:
             # finished runs have a child
-            if verbose: 
+            if verbose:
                 print(run.attrib)
                 print()
             completed_runs.append(run.attrib['id'])
@@ -60,5 +60,5 @@ def get_complete_segments(runs, root, verbose = True):
 
     for x in values:
         print(x)
-        
+
     return values

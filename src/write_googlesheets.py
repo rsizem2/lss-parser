@@ -3,7 +3,7 @@ import gspread
 
 from constants import TOOIE_ID, TOOIE_LSS
 from completed_runs import get_complete_runs, get_complete_segments
-from incomplete_runs import get_runs
+from incomplete_runs import get_run_segments, fix_run_segments
 
 
 
@@ -46,11 +46,21 @@ def write_tooie(complete = True, google = True):
         runs = get_complete_runs(root, True)
         data = get_complete_segments(runs, root)
     else:
-        pass
+        runs = get_run_segments(root, True)
+        fix_run_segments(runs)
+        keys = set(runs.keys())
+        rownames = list()
+        rownames.extend(['Name', 'Best'])
+        keys.difference_update(rownames)
+        rownames.extend(sorted(keys))
+        data = zip(*[runs[key] for key in runs.keys()])
+        print(rownames)
+        for x in data:
+            print(*x)
     if google:
         write_to_googlesheet(sheet_id, worksheet, data)
     else:
         pass
 
-write_tooie()
+write_tooie(False, False)
 
