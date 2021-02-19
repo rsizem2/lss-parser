@@ -3,8 +3,16 @@ Code for pulling run data from livesplit .lss, using the xmltree library
 '''
 
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 
-def get_complete_runs(root, verbose = True):
+
+def get_xmltree(filename):
+    tree = ET.parse(filename)
+    root = tree.getroot()
+    return tree, root
+
+
+def get_complete_segments(root, verbose = False):
     # gets all complete runs
     runs = root.find('AttemptHistory')
     completed_runs = list()
@@ -31,11 +39,9 @@ def get_complete_runs(root, verbose = True):
         if verbose:
             print(completed_runs)
             print()
-    return completed_runs
-
-def get_complete_segments(runs, root, verbose = True):
+    # get all the individual segments
     values = list()
-    completed_runs = sorted(runs, key=lambda x: int(x))
+    completed_runs = sorted(completed_runs, key=lambda x: int(x))
     segments = root.find('Segments')
     print(completed_runs)
     names = ['Best Segment']
@@ -57,8 +63,41 @@ def get_complete_segments(runs, root, verbose = True):
                     segs.append(child.text)
             print()
         values.append(segs)
-
     for x in values:
         print(x)
-
     return values
+
+
+def get_run_segments(root, verbose = False):
+    runs = [x.attrib['id'] for x in root.find('AttemptHistory')]
+    if verbose:
+        print(runs)
+    runs = set(runs)
+    segments = root.find('Segments')
+    segs = defaultdict(list)
+
+    # all runs that get past the first split
+    for i, segment in enumerate(segments, start = 1):
+        name = segment.find('Name')
+        segs['Name'].append(name.text)
+        best = segment.find('BestSegmentTime')
+        segs['Best'].append(best[0].text)
+        if verbose:
+            print(name.text)
+            print('Best:', best[0].text)
+        history = segment.find('SegmentHistory')
+        ids = set(runs)
+        for run in history:
+            run_id = run.attrib['id']
+            if len(run):
+                segs[run_id].append(run[0].text)
+                print(run_id, run[0].text)
+            else:
+                segs[run_id].append(None)
+                print(run_id, None)
+                pass
+            if run_id in ids: ids.remove(run_id)
+        for run_id in ids:
+            segs[run_id].append(None)
+            print(run_id, None)
+    return segs
