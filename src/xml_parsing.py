@@ -91,13 +91,15 @@ def get_run_segments(root, verbose = False):
             run_id = run.attrib['id']
             if len(run):
                 segs[run_id].append(run[0].text)
-                print(run_id, run[0].text)
+                if verbose: 
+                    print(run_id, run[0].text)
             else:
                 segs[run_id].append(None)
-                print(run_id, None)
+                if verbose:
+                    print(run_id, None)
                 pass
             if run_id in ids: ids.remove(run_id)
         for run_id in ids:
             segs[run_id].append(None)
-            print(run_id, None)
+            if verbose: print(run_id, None)
     return segs

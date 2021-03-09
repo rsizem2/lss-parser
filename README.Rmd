@@ -1,0 +1,28 @@
+---
+title: "README"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+source_python("src/main.py")
+source_python("src/helper.py")
+source_python("src/xml_parsing.py")
+```
+
+The scripts in this repository can be used to parse livesplit data for easier analysis.
+
+## Example
+
+Importing .lss data into a Pandas DataFrame object
+
+```{python}
+splits_file = "lss/Banjo-Tooie - No DCWBC.lss"
+
+tree, root = get_xmltree(splits_file)
+runs = get_run_segments(root)
+format_data(runs).head(n = 10)
+```
+
+
