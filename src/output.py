@@ -1,6 +1,7 @@
 '''
-Functions for writing .lss data to .csv or google sheets.
+Functions for outputting in various formats.
 '''
+
 def write_to_sheets(sheet_id, worksheet_name, data):
     import time
     import gspread
@@ -26,3 +27,19 @@ def write_to_csv(filename, data):
             line = ','.join(x)+'\n'
             temp.write(line)
             #print(*x)
+    return
+
+def write_to_dataframe(runs):
+    from pandas import DataFrame as df
+    #fix_run_segments(runs)
+    keys = set(runs.keys())
+    rownames = ['Split', 'Best Segment']
+    keys.difference_update(['Name', 'Best'])
+    for key in keys:
+        runs[key] = [get_datetime(x) if x else x for x in runs[key]]
+    runs['Best'] = [get_datetime(x) if x else x for x in runs['Best']]
+    rownames.extend([" ".join(["Run",x]) for x in sorted(keys)])
+    fix_subsplit_names(runs['Name'])
+    data = [rownames]
+    data.extend(list(zip(*[runs[key] for key in runs.keys()])))
+    return df.from_dict(data)
